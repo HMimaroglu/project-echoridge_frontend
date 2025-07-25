@@ -8,41 +8,44 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Deep-forest base
         primary: {
-          50: '#fef7f0',
-          100: '#feeee0',
-          200: '#fddcc2',
-          300: '#fac49e',
-          400: '#f7a978',
-          500: '#f38d56',
-          600: '#e87339',
-          700: '#d65a28',
-          800: '#b54723',
-          900: '#923c22',
+          50: '#C7D1B5', // Mist neutral
+          100: '#889176', // Stone shadow
+          200: '#E6BC7F', // Warm limestone
+          300: '#162714', // Evergreen shadow
+          400: '#162714', // Evergreen shadow
+          500: '#0A1C10', // Deep-forest base
+          600: '#0A1C10',
+          700: '#0A1C10',
+          800: '#0A1C10',
+          900: '#0A1C10',
         },
+        // Nature accents
         secondary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#D4D819', // Chartreuse highlight
+          100: '#D4D819',
+          200: '#8BC53F', // Sunlit grass
+          300: '#8BC53F',
+          400: '#8BC53F',
+          500: '#8BC53F',
+          600: '#4A6B24', // Moss green
+          700: '#4A6B24',
+          800: '#4A6B24',
+          900: '#4A6B24',
         },
+        // Neutrals mapped to theme
         neutral: {
-          50: '#fafaf9',
-          100: '#f5f5f4',
-          200: '#e7e5e4',
-          300: '#d6d3d1',
-          400: '#a8a29e',
-          500: '#78716c',
-          600: '#57534e',
-          700: '#44403c',
-          800: '#292524',
-          900: '#1c1917',
+          50: '#C7D1B5', // Mist neutral
+          100: '#889176', // Stone shadow
+          200: '#E6BC7F', // Warm limestone
+          300: '#889176',
+          400: '#889176',
+          500: '#889176',
+          600: '#162714', // Evergreen shadow
+          700: '#162714',
+          800: '#0A1C10', // Deep-forest base
+          900: '#0A1C10',
         },
       },
     },
