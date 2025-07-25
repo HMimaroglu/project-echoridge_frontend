@@ -60,3 +60,51 @@ body {
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Fix parallax on mobile */
+  .parallax-bg {
+    background-attachment: scroll;
+  }
+  
+  /* Improve text readability on small screens */
+  .text-6xl {
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Better spacing for mobile */
+  section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  /* Add top spacing to middle sections only */
+  section:not(:first-child):not(:last-child) {
+    padding-top: 3rem !important;
+  }
+  
+  /* Ensure buttons are touch-friendly */
+  button {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Better grid spacing on mobile */
+  .grid {
+    gap: 1.5rem !important;
+  }
+  
+  /* Improve card padding on mobile */
+  .bg-primary-50\/10 {
+    padding: 1.5rem !important;
+  }
+  
+  /* Fix bottom text visibility */
+  .text-xs {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 400 !important;
+  }
+}
