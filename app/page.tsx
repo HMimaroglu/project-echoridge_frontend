@@ -1,4 +1,84 @@
+'use client'
+
+import { useState } from 'react'
+
 export default function Home() {
+  const [showContactModal, setShowContactModal] = useState(false)
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'error'}>({ show: false, message: '', type: 'success' })
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ show: true, message, type })
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000)
+  }
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    formData.append("access_key", "27762791-179e-4021-8319-f180f0ffae0e")
+    formData.append("subject", "New Contact Form Submission - Echo Ridge")
+    formData.append("from_name", "Echo Ridge Website")
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setShowContactModal(false)
+        showToast('Message sent successfully!', 'success')
+        ;(e.target as HTMLFormElement).reset()
+      } else {
+        console.log("Error", data)
+        showToast('Failed to send message. Please try again.', 'error')
+      }
+    } catch (error) {
+      console.log("Error", error)
+      showToast('Failed to send message. Please try again.', 'error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    const formData = new FormData(e.target as HTMLFormElement)
+    formData.append("access_key", "27762791-179e-4021-8319-f180f0ffae0e")
+    formData.append("subject", "New Waitlist Signup - Echo Ridge")
+    formData.append("from_name", "Echo Ridge Website")
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setShowWaitlistModal(false)
+        showToast('Successfully joined the waitlist!', 'success')
+        ;(e.target as HTMLFormElement).reset()
+      } else {
+        console.log("Error", data)
+        showToast('Failed to join waitlist. Please try again.', 'error')
+      }
+    } catch (error) {
+      console.log("Error", error)
+      showToast('Failed to join waitlist. Please try again.', 'error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-400">
       {/* Hero Section */}
@@ -9,10 +89,16 @@ export default function Home() {
             Project Echo Ridge
           </h1>
           <div className="flex flex-col sm:flex-row gap-3 mb-6 fade-in-up animate-delay-200 w-full">
-            <button className="px-6 py-3 bg-transparent text-primary-50 text-base font-medium backdrop-blur-sm border border-primary-100/20 sm:border-none rounded-lg sm:rounded-none hover:bg-primary-50/10 sm:hover:bg-transparent transition-all duration-200 w-full sm:w-auto">
+            <button 
+              onClick={() => setShowContactModal(true)}
+              className="px-6 py-3 bg-transparent text-primary-50 text-base font-medium backdrop-blur-sm border border-primary-100/20 sm:border-none rounded-lg sm:rounded-none hover:bg-primary-50/10 sm:hover:bg-transparent transition-all duration-200 w-full sm:w-auto shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
               Contact Us
             </button>
-            <button className="px-6 py-3 bg-transparent text-primary-50 text-base font-medium backdrop-blur-sm border border-primary-100/20 sm:border-none rounded-lg sm:rounded-none hover:bg-primary-50/10 sm:hover:bg-transparent transition-all duration-200 w-full sm:w-auto">
+            <button 
+              onClick={() => setShowWaitlistModal(true)}
+              className="px-6 py-3 bg-transparent text-primary-50 text-base font-medium backdrop-blur-sm border border-primary-100/20 sm:border-none rounded-lg sm:rounded-none hover:bg-primary-50/10 sm:hover:bg-transparent transition-all duration-200 w-full sm:w-auto shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
               Join Waitlist
             </button>
           </div>
@@ -145,7 +231,10 @@ export default function Home() {
           <p className="text-lg sm:text-xl text-primary-100 mb-8 max-w-2xl mx-auto px-4">
             Be among the first to access Echo Ridge when we launch. Join our waitlist for early updates and exclusive access.
           </p>
-          <button className="px-6 sm:px-8 py-3 sm:py-4 bg-secondary-500/20 text-primary-50 text-base sm:text-lg font-semibold backdrop-blur-sm border border-secondary-500/40 rounded-lg sm:rounded-none hover:bg-secondary-500/30 transition-all duration-200 mb-8 sm:mb-12 w-full sm:w-auto">
+          <button 
+            onClick={() => setShowWaitlistModal(true)}
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-secondary-500/20 text-primary-50 text-base sm:text-lg font-semibold backdrop-blur-sm border border-secondary-500/40 rounded-lg sm:rounded-none hover:bg-secondary-500/30 transition-all duration-200 mb-8 sm:mb-12 w-full sm:w-auto beveled-button-subtle"
+          >
             Join Waitlist
           </button>
           <p className="text-primary-100 text-xs sm:text-sm">
@@ -153,6 +242,157 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-primary-800/90 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-gradient-to-br from-primary-300 to-primary-400 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-primary-100/20 transform animate-scale-in">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-primary-50">Contact Us</h3>
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="text-primary-100 hover:text-primary-50 text-2xl transition-colors"
+              >
+                ×
+              </button>
+            </div>
+            <form className="space-y-4" onSubmit={handleContactSubmit}>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Name</label>
+                <input 
+                  type="text" 
+                  name="name"
+                  required
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Email</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  required
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Message</label>
+                <textarea 
+                  rows={4}
+                  name="message"
+                  required
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all resize-none"
+                  placeholder="Tell us about your project..."
+                ></textarea>
+              </div>
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full px-6 py-3 bg-secondary-600 text-primary-50 font-semibold rounded-lg hover:bg-secondary-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Waitlist Modal */}
+      {showWaitlistModal && (
+        <div className="fixed inset-0 bg-primary-800/90 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-gradient-to-br from-primary-300 to-primary-400 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-primary-100/20 transform animate-scale-in">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-primary-50">Join Our Waitlist</h3>
+              <button 
+                onClick={() => setShowWaitlistModal(false)}
+                className="text-primary-100 hover:text-primary-50 text-2xl transition-colors"
+              >
+                ×
+              </button>
+            </div>
+            <div className="mb-6">
+              <p className="text-primary-100 text-sm leading-relaxed">
+                Be among the first to experience Echo Ridge. Get early access, exclusive updates, and help shape the future of AI market intelligence.
+              </p>
+            </div>
+            <form className="space-y-4" onSubmit={handleWaitlistSubmit}>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Name</label>
+                <input 
+                  type="text" 
+                  name="name"
+                  required
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Email</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  required
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label className="block text-primary-50 text-sm font-medium mb-2">Company (Optional)</label>
+                <input 
+                  type="text" 
+                  name="company"
+                  className="w-full px-4 py-3 bg-primary-50/10 border border-primary-100/20 rounded-lg text-primary-50 placeholder-primary-100 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-secondary-200 focus:border-transparent transition-all"
+                  placeholder="Your company"
+                />
+              </div>
+              <div className="flex items-start space-x-3">
+                <input 
+                  type="checkbox" 
+                  id="updates"
+                  name="updates"
+                  className="mt-1 w-4 h-4 text-secondary-600 bg-primary-50/10 border-primary-100/20 rounded focus:ring-secondary-200 focus:ring-2"
+                />
+                <label htmlFor="updates" className="text-primary-100 text-xs leading-relaxed">
+                  I'd like to receive updates about Echo Ridge development and early access opportunities.
+                </label>
+              </div>
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full px-6 py-3 bg-secondary-600 text-primary-50 font-semibold rounded-lg hover:bg-secondary-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className="fixed top-6 right-6 z-50 animate-toast-in">
+          <div className={`px-6 py-4 rounded-xl shadow-2xl backdrop-blur-sm border transform transition-all duration-300 ${
+            toast.type === 'success' 
+              ? 'bg-secondary-600/90 border-secondary-500/50 text-primary-50' 
+              : 'bg-red-600/90 border-red-500/50 text-white'
+          }`}>
+            <div className="flex items-center space-x-3">
+              <div className={`w-2 h-2 rounded-full animate-pulse ${
+                toast.type === 'success' ? 'bg-secondary-200' : 'bg-red-200'
+              }`}></div>
+              <span className="font-medium">{toast.message}</span>
+              <button 
+                onClick={() => setToast({ show: false, message: '', type: 'success' })}
+                className="ml-2 text-current/70 hover:text-current transition-colors"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
